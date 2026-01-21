@@ -5,17 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class DashboardAdminController extends Controller
 {
     public function index()
     {
-        $total = DB::table('v_total_saldo')->first();
-        $leaderboard = DB::table('v_leaderboard')->get();
+        $totalSaldo = DB::table('v_total_saldo')->first();
 
-        return view('admin.dashboard', [
-            'total' => $total,
-            'leaderboard' => $leaderboard,
-        ]);
+        $totalUser = DB::table('users')
+                        ->where('role', 2)
+                        ->whereNull('deleted_at')
+                        ->count();
+                        
+        $leaderboard = DB::table('v_leaderboard')
+                        ->limit(10)
+                        ->get();
+
+        return view('admin.dashboard', compact('totalSaldo', 'totalUser', 'leaderboard'));
     }
 }

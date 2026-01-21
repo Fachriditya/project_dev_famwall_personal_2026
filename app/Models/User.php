@@ -6,27 +6,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'nama',
+        'username',
         'password',
+        'photo',
+        'role',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -41,8 +43,48 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'deleted_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Relasi ke transactions
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Scope untuk admin
+     */
+    public function scopeAdmin($query)
+    {
+        return $query->where('role', 1);
+    }
+
+    /**
+     * Scope untuk user
+     */
+    public function scopeUser($query)
+    {
+        return $query->where('role', 2);
+    }
+
+    /**
+     * Check apakah admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 1;
+    }
+
+    /**
+     * Check apakah user
+     */
+    public function isUser()
+    {
+        return $this->role === 2;
     }
 }
