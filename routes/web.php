@@ -3,10 +3,10 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardAdminController;
-use App\Http\Controllers\Admin\UsersManagementController;  // ✅ UPDATED
-use App\Http\Controllers\Admin\TransactionsManagementController;  // ✅ UPDATED
+use App\Http\Controllers\Admin\UsersManagementController;
+use App\Http\Controllers\Admin\TransactionsManagementController;
 use App\Http\Controllers\User\DashboardUserController;
-use App\Http\Controllers\User\TransactionUserController;
+use App\Http\Controllers\User\TransactionsHistoryController;
 
 // ============================================
 // PUBLIC ROUTES
@@ -60,10 +60,8 @@ Route::middleware(['auth', 'isUser'])->prefix('user')->name('user.')->group(func
     Route::get('/dashboard', [DashboardUserController::class, 'index'])->name('dashboard');
     
     // Transactions
-    Route::get('/transactions', [TransactionUserController::class, 'index'])->name('transactions.index');
-    Route::post('/transactions/nabung', [TransactionUserController::class, 'nabung'])->name('transactions.nabung');
-    Route::post('/transactions/tarik', [TransactionUserController::class, 'tarik'])->name('transactions.tarik');
-    
+    Route::get('/transactions', [TransactionsHistoryController::class, 'index'])->name('transactions.index');
+
     // Profile User
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
